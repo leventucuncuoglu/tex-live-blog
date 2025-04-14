@@ -55,7 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setUser(mockUser)
       
       // Cookie'ye kullanıcı bilgisini kaydet
-      document.cookie = `user=${JSON.stringify(mockUser)}; path=/`
+      document.cookie = `user=${JSON.stringify(mockUser)}; path=/; max-age=86400; secure; samesite=strict`
       
       // Editör ise panele, değilse ana sayfaya yönlendir
       router.push('/blog/home')
@@ -70,7 +70,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     setUser(null)
     // Cookie'yi sil
-    document.cookie = 'user=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT'
+    document.cookie = 'user=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; secure; samesite=strict'
     router.push('/login')
   }
 
