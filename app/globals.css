@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-color: #2D3748;
+  --secondary-color: #4A5568;
+  --accent-color: #F56565;
+  --text-primary: #2D3748;
+  --text-secondary: #4A5568;
+  --text-muted: #718096;
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F7FAFC;
+  --bg-accent: #EDF2F7;
+}
+
+@layer base {
+  body {
+    @apply bg-[#F7FAFC] text-[#2D3748];
+  }
+
+  h1 {
+    @apply text-3xl font-bold text-[#2D3748];
+  }
+
+  h2 {
+    @apply text-2xl font-semibold text-[#2D3748];
+  }
+
+  h3 {
+    @apply text-xl font-semibold text-[#2D3748];
+  }
+
+  p {
+    @apply text-[#4A5568];
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply px-4 py-2 bg-[#F56565] text-white rounded-md hover:bg-[#E53E3E] transition-colors;
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 bg-[#EDF2F7] text-[#2D3748] rounded-md hover:bg-[#E2E8F0] transition-colors;
+  }
+
+  .card {
+    @apply bg-white rounded-lg shadow-sm p-6;
+  }
+
+  .input {
+    @apply w-full px-3 py-2 border border-[#E2E8F0] rounded-md focus:outline-none focus:ring-2 focus:ring-[#F56565] focus:border-transparent;
+  }
+
+  .badge {
+    @apply px-2 py-1 text-xs font-medium rounded-full;
+  }
+
+  .badge-primary {
+    @apply bg-[#F56565] text-white;
+  }
+
+  .badge-secondary {
+    @apply bg-[#EDF2F7] text-[#2D3748];
+  }
+
+  .badge-success {
+    @apply bg-[#48BB78] text-white;
+  }
+
+  .badge-warning {
+    @apply bg-[#ECC94B] text-white;
+  }
+
+  .badge-danger {
+    @apply bg-[#F56565] text-white;
+  }
+}
+
+/* Özel Animasyonlar */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Özel Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+} 
