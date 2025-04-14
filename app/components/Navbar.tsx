@@ -47,7 +47,7 @@ export default function Navbar() {
               <Link href="/blog/interviews" className="px-3 py-1 text-sm text-gray-300 hover:text-white">
                 Ekip / Lider Röportajları
               </Link>
-              <Link href="/blog/social" className="px-3 py-1 text-sm text-gray-300 hover:text-white">
+              <Link href="/blog/events" className="px-3 py-1 text-sm text-gray-300 hover:text-white">
                 Sosyal Etkinlik Haberleri
               </Link>
               <Link href="/blog/dictionary" className="px-3 py-1 text-sm text-gray-300 hover:text-white">
@@ -150,7 +150,7 @@ export default function Navbar() {
             <Link href="/blog/interviews" className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 rounded-md">
               Ekip / Lider Röportajları
             </Link>
-            <Link href="/blog/social" className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 rounded-md">
+            <Link href="/blog/events" className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 rounded-md">
               Sosyal Etkinlik Haberleri
             </Link>
             <Link href="/blog/dictionary" className="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-700 rounded-md">
