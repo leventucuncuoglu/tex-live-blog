@@ -2,86 +2,144 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
-
-type User = {
-  id: string
-  name: string
-  email: string
-  role: string
-}
+import { createSupabaseClient } from '@/lib/supabase'
+import { User, Session } from '@supabase/supabase-js'
 
 type AuthContextType = {
   user: User | null
-  login: (email: string, password: string, isEditor: boolean) => Promise<void>
-  logout: () => void
-  isLoading: boolean
+  session: Session | null
+  loading: boolean
+  signIn: (email: string, password: string) => Promise<void>
+  signUp: (email: string, password: string) => Promise<void>
+  signInWithGoogle: () => Promise<void>
+  signOut: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [session, setSession] = useState<Session | null>(null)
+  const [loading, setLoading] = useState(true)
   const router = useRouter()
+  const supabase = createSupabaseClient()
 
   useEffect(() => {
-    try {
-      if (typeof window !== 'undefined') {
-        const storedUser = localStorage.getItem('user')
-        if (storedUser) {
-          setUser(JSON.parse(storedUser))
+    // Get initial session
+    const getSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      setSession(session)
+      setUser(session?.user ?? null)
+      setLoading(false)
+    }
+
+    getSession()
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        setSession(session)
+        setUser(session?.user ?? null)
+        setLoading(false)
+
+        if (event === 'SIGNED_IN') {
+          router.push('/blog/home')
+        } else if (event === 'SIGNED_OUT') {
+          router.push('/login')
         }
       }
-    } catch (error) {
-      console.error('Error loading user from localStorage:', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }, [])
+    )
 
-  const login = async (email: string, password: string, isEditor: boolean = false): Promise<void> => {
-    setIsLoading(true)
+    return () => subscription.unsubscribe()
+  }, [router, supabase.auth])
+
+  const signIn = async (email: string, password: string) => {
+    setLoading(true)
     try {
-      // Simüle edilmiş login işlemi
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      const mockUser = {
-        id: '1',
-        name: isEditor ? 'Editor User' : 'Test User',
+      const { error } = await supabase.auth.signInWithPassword({
         email,
-        role: isEditor ? 'editor' : 'user'
-      }
-      
-      setUser(mockUser)
-      
-      // Cookie'ye kullanıcı bilgisini kaydet
-      document.cookie = `user=${JSON.stringify(mockUser)}; path=/; max-age=86400; secure; samesite=strict`
-      
-      // Editör ise panele, değilse ana sayfaya yönlendir
-      router.push('/blog/home')
+        password,
+      })
+      if (error) throw error
     } catch (error) {
-      console.error('Login error:', error)
+      console.error('Error signing in:', error)
       throw error
     } finally {
-      setIsLoading(false)
+      setLoading(false)
     }
   }
 
-  const logout = () => {
-    setUser(null)
-    // Cookie'yi sil
-    document.cookie = 'user=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; secure; samesite=strict'
-    router.push('/login')
+  const signUp = async (email: string, password: string) => {
+    setLoading(true)
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`
+        }
+      })
+      if (error) throw error
+    } catch (error) {
+      console.error('Error signing up:', error)
+      throw error
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const signInWithGoogle = async () => {
+    setLoading(true)
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+            hd: 'trendyol.com' // Google Workspace domain restriction
+          }
+        }
+      })
+      if (error) throw error
+    } catch (error) {
+      console.error('Error signing in with Google:', error)
+      throw error
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const signOut = async () => {
+    setLoading(true)
+    try {
+      const { error } = await supabase.auth.signOut()
+      if (error) throw error
+    } catch (error) {
+      console.error('Error signing out:', error)
+      throw error
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isLoading }}>
+    <AuthContext.Provider value={{
+      user,
+      session,
+      loading,
+      signIn,
+      signUp,
+      signInWithGoogle,
+      signOut
+    }}>
       {children}
     </AuthContext.Provider>
   )
 }
 
-export function useAuth() {
+export const useAuth = () => {
   const context = useContext(AuthContext)
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider')

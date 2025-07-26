@@ -1,11 +1,14 @@
+import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
+  const res = NextResponse.next()
+  const supabase = createMiddlewareClient({ req: request, res })
   const { pathname } = request.nextUrl
 
-  // Kullanıcı oturumu
-  const hasUserSession = request.cookies.has('user')
+  // Refresh session if expired
+  const { data: { session } } = await supabase.auth.getSession()
 
   // Ana sayfa isteğini login'e yönlendir
   if (pathname === '/') {
@@ -13,22 +16,28 @@ export function middleware(request: NextRequest) {
   }
 
   // Login sayfasında oturum varsa blog/home'a yönlendir
-  if (pathname === '/login' && hasUserSession) {
+  if (pathname === '/login' && session) {
     return NextResponse.redirect(new URL('/blog/home', request.url))
   }
 
-  // Blog sayfalarına oturum yoksa erişimi engelle
-  if (pathname.startsWith('/blog') && !hasUserSession) {
+  // Blog sayfalarına oturum yoksa erişimi engelle (auth callback hariç)
+  if (pathname.startsWith('/blog') && !session) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  return NextResponse.next()
+  // Auth callback sayfasına her zaman erişim izni ver
+  if (pathname.startsWith('/auth/callback')) {
+    return res
+  }
+
+  return res
 }
 
 export const config = {
   matcher: [
     '/',
     '/login',
-    '/blog/:path*'
+    '/blog/:path*',
+    '/auth/callback'
   ]
 } 

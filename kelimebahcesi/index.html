@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelime Bahçesi</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="arkaplan-efektleri">
+        <div class="yildizlar"></div>
+        <div class="balonlar">
+            <!-- Daha fazla görünür animasyon için ekstra balonlar -->
+            <span style="left:10%; animation-delay:1s;">🎈</span>
+            <span style="left:20%; animation-delay:3s;">🎈</span>
+            <span style="left:40%; animation-delay:6s;">🎀</span>
+            <span style="left:70%; animation-delay:4s;">✨</span>
+            <span style="left:85%; animation-delay:2s;">🎁</span>
+            <span style="left:30%; animation-delay:7s;">🌈</span>
+            <span style="left:60%; animation-delay:5s;">⭐</span>
+            <span style="left:75%; animation-delay:8s;">🦋</span>
+        </div>
+    </div>
+
+    <div class="oyun-konteyneri">
+        <header>
+            <h1 id="oyun-basligi">Kelime Bahçesi</h1>
+            <div id="isim-giris-alani">
+                <label for="cocuk-adi">Adın ne güzel kaşif? </label>
+                <input type="text" id="cocuk-adi" placeholder="Adını buraya yaz">
+                <button id="isim-kaydet-btn">Başla!</button>
+            </div>
+        </header>
+
+        <main id="oyun-alani" class="gizli">
+            <div class="skor-bilgisi">
+                <p>Oyuncu: <span id="oyuncu-adi-goster"></span></p>
+                <p>Puan: <span id="puan">0</span></p>
+                <p>Kelime: <span id="kelime-sayaci">0</span> / <span id="toplam-kelime-sayisi">20</span></p>
+            </div>
+
+            <div class="cicek-ve-haklar">
+                <div id="cicek-gorseli" class="buyume-efekti">
+                    🌱
+                </div>
+                <div id="kalan-haklar">
+                    Sulama Hakkı: <span id="hak-sayisi">6</span> 💧
+                </div>
+            </div>
+
+            <div id="kelime-gosterge-alani">
+            </div>
+
+            <!-- İpucu alanı ayrı olacak, sabit kalacak -->
+            <div id="ipucu-alani"></div>
+            
+            <!-- Doğru/yanlış mesajları burada gösterilecek -->
+            <div id="mesaj-alani"></div>
+
+            <div id="input-alani">
+                <div id="klavye-alani" class="aktif">
+                </div>
+                <div id="yazi-alani" class="gizli">
+                    <input type="text" id="yazilan-kelime" placeholder="Kelimeyi tahmin et">
+                    <button id="kelime-gonder-btn">Tahmin Et</button>
+                </div>
+                <div id="giris-secenekleri">
+                    <button id="harf-sec-btn" class="aktif">Harf Seç</button>
+                    <button id="kelime-yaz-btn">Kelime Yaz</button>
+                </div>
+            </div>
+
+            <button id="sonraki-kelime-btn" class="gizli">Sonraki Kelime</button>
+        </main>
+
+        <div id="oyun-sonu-mesaji" class="gizli">
+            <h2>Oyun Bitti!</h2>
+            <p id="son-skor-mesaji"></p>
+            <div class="yildizlar-konteyner">
+                <span class="yildiz">⭐</span>
+                <span class="yildiz">⭐</span>
+                <span class="yildiz">⭐</span>
+            </div>
+            <button id="tekrar-oyna-btn">Tekrar Oyna</button>
+        </div>
+    </div>
+
+    <!-- Sonraki kelime banner'ı -->
+    <div id="sonraki-kelime-banner">
+        <p>Harika! Kelimeyi buldun! 🎉</p>
+        <button id="sonraki-kelime-banner-btn">Sonraki Kelimeye Geç</button>
+    </div>
+    
+    <!-- Kelimeyi bilemediğinde çıkacak banner -->
+    <div id="kelime-bilemedi-banner">
+        <p>Üzgünüm! Tüm haklarını kullandın. 😔</p>
+        <p>Doğru kelime: <span id="dogru-kelime-goster"></span></p>
+        <button id="kelime-bilemedi-banner-btn">Sonraki Kelimeye Geç</button>
+    </div>
+    
+    <!-- Önceki versiyondaki sesler -->
+    <audio id="dogru-ses" src="https://assets.mixkit.co/active_storage/sfx/270/270-preview.mp3" preload="auto"></audio>
+    <audio id="yanlis-ses" src="https://assets.mixkit.co/active_storage/sfx/952/952-preview.mp3" preload="auto"></audio>
+    <audio id="tamamlandi-ses" src="https://assets.mixkit.co/active_storage/sfx/2/2-preview.mp3" preload="auto"></audio>
+
+    <script src="script.js"></script>
+</body>
+</html>

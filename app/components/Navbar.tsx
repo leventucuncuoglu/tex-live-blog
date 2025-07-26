@@ -6,13 +6,13 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 export default function Navbar() {
-  const { user, logout } = useAuth()
+  const { user, signOut } = useAuth()
   const router = useRouter()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
 
   const handleLogout = () => {
-    logout()
+    signOut()
     router.push('/login')
   }
 
@@ -80,7 +80,12 @@ export default function Navbar() {
                   <div className="h-8 w-8 rounded-full bg-gray-600 flex items-center justify-center">
                     <span className="text-sm font-medium">{user.name[0]}</span>
                   </div>
-                  <span>Merhaba {user.name}</span>
+                  <div className="text-sm">
+                    <div className="font-medium text-gray-900">
+                      {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Kullanıcı'}
+                    </div>
+                    <div className="text-gray-500">{user?.email}</div>
+                  </div>
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                   </svg>
@@ -95,7 +100,7 @@ export default function Navbar() {
                       Profil
                     </Link>
                     <button
-                      onClick={handleLogout}
+                      onClick={signOut}
                       className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
                       Çıkış Yap
